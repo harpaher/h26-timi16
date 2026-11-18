@@ -1,6 +1,7 @@
 import "./App.css";
 import type { Item } from "./type";
-import { useState } from "react";
+import { useState, type ChangeEvent } from "react";
+import ItemRow from "./components/ItemRow";
 
 const startItems: Item[] = [
   { id: 1, text: "Mjólk", done: false },
@@ -24,6 +25,18 @@ function App() {
   function handleDelete(id: number) {
     setItems(items.filter((item) => item.id !== id));
   }
+
+  function handleToggle(id: number) {
+    setItems(items.map((item) => (item.id === id ? { ...item, done: !item.done } : item)));
+  }
+
+  function handleClearDone() {
+    setItems(items.filter((item) => !item.done));
+  }
+
+  const remaining = items.filter((item) => !item.done).length;
+  const doneCount = items.length - remaining;
+
   return (
     <main>
       <h1>Innkaupalisti</h1>
@@ -31,14 +44,23 @@ function App() {
         <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Hvað vantar á innkaupalistann?" />
         <button type="submit">Bæta við</button>
       </form>
-      <ul>
-        {items.map((item) => (
-          <li key={item.id}>
-            {item.text}
-            <button onClick={() => handleDelete(item.id)}>X</button>
-          </li>
-        ))}
-      </ul>
+      {items.length === 0 ? (
+        <p className="empty">Listinn er tómur!!</p>
+      ) : (
+        <ul>
+          {items.map((item) => (
+            <ItemRow item={item} onDelete={handleDelete} onToggle={handleToggle} />
+          ))}
+        </ul>
+      )}
+      <footer>
+        <p>
+          {remaining} eftir af {items.length}
+        </p>
+        <button onClick={handleClearDone} disabled={doneCount === 0}>
+          Hreinsa allt keypt
+        </button>
+      </footer>
     </main>
   );
 }
