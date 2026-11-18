@@ -13,7 +13,9 @@ export function ItemRow({ item, onDelete, onToggle }: ItemRowProps) {
         <input type="checkbox" checked={item.done} onChange={() => onToggle(item.id)} />
         {item.text}
       </label>
-      <button onClick={() => onDelete(item.id)}>X</button>
+      <button className="delete" onClick={() => onDelete(item.id)}>
+        X
+      </button>
     </li>
   );
 }
